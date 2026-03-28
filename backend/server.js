@@ -10,14 +10,22 @@ const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Sarah — warm, natural
 const ttsCache = new Map(); // text hash → base64 mp3
 
+const path = require('path');
+
 const app = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const MODEL = 'claude-sonnet-4-6';
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGIN || '*',
+}));
 app.use(express.json({ limit: '20mb' }));
+
+// Serve React frontend in production
+const FRONTEND_DIST = path.join(__dirname, '../frontend/dist');
+app.use(express.static(FRONTEND_DIST));
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -545,6 +553,11 @@ Reply in 2-4 natural spoken sentences — no bullet points, no markdown. Name th
     console.error('[compare-products]', err.message);
     res.status(500).json({ error: 'Comparison failed' });
   }
+});
+
+// ── Catch-all: serve React app for any non-API route ───────────────────────
+app.get('*', (req, res) => {
+  res.sendFile(path.join(FRONTEND_DIST, 'index.html'));
 });
 
 // ── Start ──────────────────────────────────────────────────────────────────
