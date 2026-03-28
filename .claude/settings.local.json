@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(taskkill //F //IM ngrok.exe)",
+      "Bash(curl -s http://localhost:4040/api/tunnels)",
+      "Bash(curl -s -X POST http://localhost:3001/api/tts -H \"Content-Type: application/json\" -d '{\"\"\"\"text\"\"\"\":\"\"\"\"Hello, I am your grocery assistant.\"\"\"\"}')",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''TTS OK, length:'''', len\\(d.get\\(''''audio'''',''''''''\\)\\)\\)\")",
+      "Bash(cp \"c:/Users/neeha/Downloads/IRIS-Grocery/IRIS-Grocery/iris_white.png\" \"C:/Users/neeha/Claudehackathon/frontend/public/iris_white.png\")",
+      "Bash(cp \"c:/Users/neeha/Downloads/IRIS-Grocery/IRIS-Grocery/iris_goldbg.png\" \"C:/Users/neeha/Claudehackathon/frontend/public/iris_goldbg.png\")",
+      "Bash(cp \"c:/Users/neeha/Downloads/IRIS-Grocery/IRIS-Grocery/iris_green.ico\" \"C:/Users/neeha/Claudehackathon/frontend/public/favicon.ico\")",
+      "Bash(npm run:*)"
+    ]
+  }
+}
