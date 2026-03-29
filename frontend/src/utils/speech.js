@@ -89,9 +89,22 @@ export async function speak(text) {
 
     currentAbortController = null;
 
-    // Reuse the single unlocked audio element
-    audioEl.src = `data:${mime};base64,${audio}`;
-    audioEl.volume = 1;
+    // Wait for the audio to finish loading before calling play().
+    // On Railway (or any remote deploy) the data URL can take a moment to
+    // decode; calling play() before canplay fires is the main cause of
+    // inconsistent audio on production deployments.
+    await new Promise((resolve, reject) => {
+      const onReady = () => { audioEl.removeEventListener('error', onFail); resolve(); };
+      const onFail  = () => { audioEl.removeEventListener('canplay', onReady); reject(new Error('audio load error')); };
+      audioEl.addEventListener('canplay', onReady, { once: true });
+      audioEl.addEventListener('error',   onFail,  { once: true });
+      audioEl.src = `data:${mime};base64,${audio}`;
+      audioEl.volume = 1;
+      audioEl.load();
+    });
+
+    if (controller.signal.aborted) return;
+
     audioEl.play().catch(err => {
       console.warn('[speech] play() blocked:', err.message);
       // Mark as not unlocked so next user tap re-unlocks
