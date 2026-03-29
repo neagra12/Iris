@@ -28,6 +28,7 @@ app.get('/api/health', (req, res) => {
 });
 
 const MODEL = 'claude-sonnet-4-6';
+const FAST_MODEL = 'claude-haiku-4-5-20251001'; // for high-frequency voice endpoints
 
 app.use(cors({
   origin: process.env.ALLOWED_ORIGIN || '*',
@@ -444,7 +445,7 @@ Rules:
     }
 
     const response = await client.messages.create({
-      model: MODEL,
+      model: FAST_MODEL,
       max_tokens: 150,
       system: systemPrompt,
       messages: [{ role: 'user', content: userContent }],
@@ -453,6 +454,7 @@ Rules:
     res.json({ reply: response.content[0].text });
   } catch (err) {
     console.error('[voice-ask]', err.message);
+    if (err.status === 429) return res.status(429).json({ error: 'Rate limit — try again in a moment.' });
     res.status(500).json({ error: 'Failed to process voice ask' });
   }
 });
@@ -470,7 +472,7 @@ app.post('/api/chat-plan', async (req, res) => {
     const recs = (plan?.nutritional_recommendations || []).join(' ');
 
     const response = await client.messages.create({
-      model: MODEL,
+      model: FAST_MODEL,
       max_tokens: 200,
       system: `You are a conversational nutrition assistant helping a user understand their weekly grocery plan.
 

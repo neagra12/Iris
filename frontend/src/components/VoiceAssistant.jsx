@@ -139,7 +139,11 @@ export default function VoiceAssistant({ analysis, healthProfile, onScanTrigger,
         body: JSON.stringify({ question: text, healthProfile: hp }),
       });
       const data = await res.json();
-      if (data.reply) {
+      if (res.status === 429) {
+        const msg = "I'm a bit busy right now — ask me again in a moment.";
+        updateExchange({ question: text, reply: msg });
+        speak(msg);
+      } else if (data.reply) {
         updateExchange({ question: text, reply: data.reply });
         speak(data.reply);
       }
