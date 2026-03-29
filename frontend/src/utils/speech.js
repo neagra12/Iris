@@ -65,6 +65,9 @@ function fallbackSpeak(text) {
   window.speechSynthesis.speak(u);
 }
 
+const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Sarah
+const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
+
 export async function speak(text) {
   if (!text) return;
   stop();
@@ -74,43 +77,61 @@ export async function speak(text) {
   currentAbortController = controller;
 
   try {
-    const res = await fetch('/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: clean }),
-      signal: controller.signal,
-    });
+    if (!ELEVENLABS_API_KEY) throw new Error('No ElevenLabs key — using fallback');
+
+    // Call ElevenLabs directly from the browser so the request comes from
+    // the user's real IP, not a datacenter (Render/Railway block free tier).
+    const res = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
+      {
+        method: 'POST',
+        headers: {
+          'xi-api-key': ELEVENLABS_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: clean,
+          model_id: 'eleven_turbo_v2_5',
+          voice_settings: { stability: 0.45, similarity_boost: 0.80, style: 0.2 },
+        }),
+        signal: controller.signal,
+      }
+    );
 
     if (controller.signal.aborted) return;
-    if (!res.ok) throw new Error(`TTS ${res.status}`);
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '');
+      throw new Error(`ElevenLabs ${res.status}: ${errBody}`);
+    }
 
-    const { audio, mime } = await res.json();
+    const arrayBuffer = await res.arrayBuffer();
     if (controller.signal.aborted) return;
 
     currentAbortController = null;
 
-    // Wait for the audio to finish loading before calling play().
-    // On Railway (or any remote deploy) the data URL can take a moment to
-    // decode; calling play() before canplay fires is the main cause of
-    // inconsistent audio on production deployments.
+    const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+    const url = URL.createObjectURL(blob);
+
     await new Promise((resolve, reject) => {
       const onReady = () => { audioEl.removeEventListener('error', onFail); resolve(); };
       const onFail  = () => { audioEl.removeEventListener('canplay', onReady); reject(new Error('audio load error')); };
       audioEl.addEventListener('canplay', onReady, { once: true });
       audioEl.addEventListener('error',   onFail,  { once: true });
-      audioEl.src = `data:${mime};base64,${audio}`;
+      audioEl.src = url;
       audioEl.volume = 1;
       audioEl.load();
     });
 
-    if (controller.signal.aborted) return;
+    if (controller.signal.aborted) { URL.revokeObjectURL(url); return; }
 
     audioEl.play().catch(err => {
       console.warn('[speech] play() blocked:', err.message);
-      // Mark as not unlocked so next user tap re-unlocks
       unlocked = false;
+      URL.revokeObjectURL(url);
       fallbackSpeak(clean);
     });
+
+    audioEl.onended = () => URL.revokeObjectURL(url);
   } catch (err) {
     if (err.name === 'AbortError') return;
     console.warn('[speech] ElevenLabs failed, fallback:', err.message);
