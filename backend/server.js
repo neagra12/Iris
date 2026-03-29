@@ -16,6 +16,17 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// ── Health Check ───────────────────────────────────────────────────────────
+app.get('/api/health', (req, res) => {
+  const k = process.env.ELEVENLABS_API_KEY;
+  res.json({
+    elevenlabs: k ? `Present (...${k.slice(-4)})` : 'Missing',
+    anthropic: process.env.ANTHROPIC_API_KEY ? 'Present' : 'Missing',
+    node_version: process.version,
+    uptime: process.uptime(),
+  });
+});
+
 const MODEL = 'claude-sonnet-4-6';
 
 app.use(cors({
