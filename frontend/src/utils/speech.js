@@ -65,9 +65,6 @@ function fallbackSpeak(text) {
   window.speechSynthesis.speak(u);
 }
 
-const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Sarah
-const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
-
 export async function speak(text) {
   if (!text) return;
   stop();
@@ -77,39 +74,24 @@ export async function speak(text) {
   currentAbortController = controller;
 
   try {
-    if (!ELEVENLABS_API_KEY) throw new Error('No ElevenLabs key — using fallback');
-
-    // Call ElevenLabs directly from the browser so the request comes from
-    // the user's real IP, not a datacenter (Render/Railway block free tier).
-    const res = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`,
-      {
-        method: 'POST',
-        headers: {
-          'xi-api-key': ELEVENLABS_API_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: clean,
-          model_id: 'eleven_turbo_v2_5',
-          voice_settings: { stability: 0.45, similarity_boost: 0.80, style: 0.2 },
-        }),
-        signal: controller.signal,
-      }
-    );
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: clean }),
+      signal: controller.signal,
+    });
 
     if (controller.signal.aborted) return;
-    if (!res.ok) {
-      const errBody = await res.text().catch(() => '');
-      throw new Error(`ElevenLabs ${res.status}: ${errBody}`);
-    }
+    if (!res.ok) throw new Error(`TTS ${res.status}`);
 
-    const arrayBuffer = await res.arrayBuffer();
+    const { audio, mime } = await res.json();
     if (controller.signal.aborted) return;
 
     currentAbortController = null;
 
-    const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+    // Convert base64 to Blob URL (more reliable than data URLs for autoplay)
+    const bytes = Uint8Array.from(atob(audio), c => c.charCodeAt(0));
+    const blob = new Blob([bytes], { type: mime });
     const url = URL.createObjectURL(blob);
 
     await new Promise((resolve, reject) => {

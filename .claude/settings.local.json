@@ -9,7 +9,9 @@
       "Bash(cp \"c:/Users/neeha/Downloads/IRIS-Grocery/IRIS-Grocery/iris_white.png\" \"C:/Users/neeha/Claudehackathon/frontend/public/iris_white.png\")",
       "Bash(cp \"c:/Users/neeha/Downloads/IRIS-Grocery/IRIS-Grocery/iris_goldbg.png\" \"C:/Users/neeha/Claudehackathon/frontend/public/iris_goldbg.png\")",
       "Bash(cp \"c:/Users/neeha/Downloads/IRIS-Grocery/IRIS-Grocery/iris_green.ico\" \"C:/Users/neeha/Claudehackathon/frontend/public/favicon.ico\")",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Read(//c/Users/neeha/AppData/Local/ngrok/**)",
+      "Read(//c/Users/neeha/.config/ngrok/**)"
     ]
   }
 }
