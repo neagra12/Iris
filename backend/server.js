@@ -518,7 +518,11 @@ app.post('/api/tts', async (req, res) => {
         voice_settings: { stability: 0.45, similarity_boost: 0.80, style: 0.2 },
       }),
     });
-    if (!r.ok) throw new Error(`ElevenLabs ${r.status}`);
+    if (!r.ok) {
+      const errBody = await r.text().catch(() => '(unreadable)');
+      console.error(`[tts] ElevenLabs ${r.status} body:`, errBody);
+      throw new Error(`ElevenLabs ${r.status}: ${errBody}`);
+    }
     const buf = await r.buffer();
     const b64 = buf.toString('base64');
     if (ttsCache.size > 150) ttsCache.delete(ttsCache.keys().next().value);
