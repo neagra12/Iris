@@ -26,22 +26,6 @@ IRIS bridges **personal health data → real-world decisions**.
 🔊 Hear it instantly
 
 **No googling. No guesswork. Just clarity.**
-
----
-
-## 🖼️ Screenshots
-
-> *(Add images here for maximum impact)*
-
-```markdown
-![Onboarding](./screenshots/onboarding.png)
-![Scanner](./screenshots/scanner.png)
-![Verdict](./screenshots/verdict.png)
-![Cart](./screenshots/cart.png)
-```
-
----
-
 ## ⚡ Core Features
 
 ### 🧠 Lab Report Intelligence
