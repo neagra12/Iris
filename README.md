@@ -1,58 +1,164 @@
-# Smart Grocery Health Assistant
+# 🚀 IRIS — Intelligent Retail & Ingredient Scanner
 
-An AI-powered grocery scanning app that checks products against your personal health profile using Claude.
+> **AI-powered grocery assistant that turns your lab report into real-time food decisions**
 
-## Quick Start
+---
 
-### 1. Set up backend
-```bash
-cd backend
-cp .env.example .env
-# Edit .env and add your ANTHROPIC_API_KEY
-npm install
-npm start
+## 🎥 Demo
+
+👉 [https://youtu.be/0iLcWrAg5fA](https://youtu.be/0iLcWrAg5fA)
+
+---
+
+## 🔗 Live App
+
+👉 [https://iris-assistant-iu-claude.fly.dev/onboarding](https://iris-assistant-iu-claude.fly.dev/onboarding)
+
+---
+
+## ✨ What IRIS Does
+
+IRIS bridges **personal health data → real-world decisions**.
+
+📋 Upload your lab report
+📷 Scan any product
+🧠 Get a personalized verdict
+🔊 Hear it instantly
+
+**No googling. No guesswork. Just clarity.**
+
+---
+
+## 🖼️ Screenshots
+
+> *(Add images here for maximum impact)*
+
+```markdown
+![Onboarding](./screenshots/onboarding.png)
+![Scanner](./screenshots/scanner.png)
+![Verdict](./screenshots/verdict.png)
+![Cart](./screenshots/cart.png)
 ```
 
-### 2. Set up frontend (new terminal)
-```bash
-cd frontend
-npm install
-npm run dev
+---
+
+## ⚡ Core Features
+
+### 🧠 Lab Report Intelligence
+
+* Extracts cholesterol, blood sugar, deficiencies, allergies
+* Builds a dynamic health profile
+
+### 📷 Real-Time Product Analysis
+
+* Scans ingredient labels using camera
+* Returns **Safe / Caution / Avoid** with reasoning
+
+### 🔊 Voice Feedback
+
+* Instant spoken responses via ElevenLabs
+* Hands-free shopping experience
+
+### 🔄 Smart Alternatives
+
+* Suggests better product options instantly
+
+### 🛒 Cart Intelligence
+
+* Tracks full cart and summarizes health impact
+
+### 🍽️ Budget Meal Planning
+
+* Aligns health goals with cost
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TB
+    User --> Frontend
+    Frontend --> Backend
+    Backend --> AI
+    AI --> Backend
+    Backend --> Frontend
 ```
 
-### 3. Open app
-Visit http://localhost:5173
+**Architecture Highlights:**
 
-## Features
+* Multi-modal AI pipeline (Vision + LLM + Voice)
+* Real-time decision system
+* Handles unstructured inputs (PDFs, images, labels)
+* End-to-end full-stack integration
 
-| Feature | Description |
-|---------|-------------|
-| 🔬 Lab Report Upload | Upload PDF or image → Claude extracts health markers |
-| 📷 Product Scanner | Live camera → AI verdict: Safe / Caution / Avoid |
-| 🔊 Voice Verdicts | Web Speech API reads every verdict aloud |
-| 💡 Alternatives | Auto-suggested safer swaps for Caution/Avoid items |
-| 🛒 Cart Analyzer | Running totals + "How's my cart?" AI summary |
-| 📋 Meal Planner | Weekly grocery list within budget, pre-vetted for your conditions |
+---
 
-## Demo Flow
+## ⚙️ Tech Stack
 
-1. Launch app → Click **"Load Demo"** (pre-fills diabetic + hypertension profile)
-2. Tap **Scan** tab → point at any food product → tap **Scan Product**
-3. Hear the verdict spoken aloud, see alternatives if needed
-4. Tap **Add to Cart** → scan 3-4 more items
-5. Tap **Cart** tab → tap **How's My Cart?**
-6. Tap **Planner** tab → enter $70 → tap **Generate My List**
+### 🧠 AI Layer
 
-## Architecture
+* Claude (Anthropic) — Vision + reasoning
+* ElevenLabs — Voice synthesis
 
-```
-frontend (Vite + React + Tailwind)  →  /api proxy  →  backend (Express)  →  Claude API
-                                                                              claude-sonnet-4-5
-```
+### 💻 Frontend
 
-## API Keys
+* React + Vite
+* Tailwind CSS
 
-Add your Anthropic API key to `backend/.env`:
-```
-ANTHROPIC_API_KEY=sk-ant-...
-```
+### 🔧 Backend
+
+* Node.js + Express
+* API orchestration for AI workflows
+
+---
+
+## 🔄 How It Works
+
+1. Upload lab report → extract health markers
+2. Scan product → analyze ingredients
+3. Compare with health profile
+4. Generate Safe / Caution / Avoid
+5. Deliver via UI + voice
+
+---
+
+## 💡 Why This Matters
+
+Most health apps give advice.
+
+IRIS delivers **decisions at the exact moment they matter**.
+
+* Context-aware → personalized to your health
+* Real-time → camera + voice
+* Decision-first → actionable output
+
+---
+
+## 🚀 Built At
+
+Claude Builder Club Hackathon
+Indiana University Bloomington
+
+---
+
+## 👥 Team
+
+* Neeha Agrawal
+* Shivali M
+* Varun Sonawane
+* Aryan Dhuru
+
+---
+
+## ⭐ Highlights
+
+* End-to-end AI system (LLM + Vision + Voice)
+* Real-world validation in grocery store
+* Handles messy real-world inputs
+* Strong product + system design focus
+
+---
+
+## 📬 Let’s Connect
+
+If you're working on **AI, data systems, or product analytics**, I’d love to connect!
