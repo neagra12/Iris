@@ -128,7 +128,7 @@ Indiana University Bloomington
 ## 👥 Team
 
 * Neeha Agrawal
-* Shivali M
+* Shivali
 * Varun Sonawane
 * Aryan Dhuru
 
